@@ -22,14 +22,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "permisos")
@@ -37,13 +35,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Permisos.findAll", query = "SELECT p FROM Permisos p")
     , @NamedQuery(name = "Permisos.findByIdPermiso", query = "SELECT p FROM Permisos p WHERE p.idPermiso = :idPermiso")
+    , @NamedQuery(name = "Permisos.findByActivo", query = "SELECT p FROM Permisos p WHERE p.activo = :activo")
     , @NamedQuery(name = "Permisos.findByNombre", query = "SELECT p FROM Permisos p WHERE p.nombre = :nombre")
     , @NamedQuery(name = "Permisos.findByDescripcion", query = "SELECT p FROM Permisos p WHERE p.descripcion = :descripcion")
-    , @NamedQuery(name = "Permisos.findByFechaModificacion", query = "SELECT p FROM Permisos p WHERE p.fechaModificacion = :fechaModificacion")
-    , @NamedQuery(name = "Permisos.findByUsuarioModificacion", query = "SELECT p FROM Permisos p WHERE p.usuarioModificacion = :usuarioModificacion")
     , @NamedQuery(name = "Permisos.findByUsuarioCreacion", query = "SELECT p FROM Permisos p WHERE p.usuarioCreacion = :usuarioCreacion")
+    , @NamedQuery(name = "Permisos.findByUsuarioModificacion", query = "SELECT p FROM Permisos p WHERE p.usuarioModificacion = :usuarioModificacion")
     , @NamedQuery(name = "Permisos.findByFechaCreacion", query = "SELECT p FROM Permisos p WHERE p.fechaCreacion = :fechaCreacion")
-    , @NamedQuery(name = "Permisos.findByActivo", query = "SELECT p FROM Permisos p WHERE p.activo = :activo")})
+    , @NamedQuery(name = "Permisos.findByFechaModificacion", query = "SELECT p FROM Permisos p WHERE p.fechaModificacion = :fechaModificacion")})
 public class Permisos implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,32 +51,25 @@ public class Permisos implements Serializable {
     @Column(name = "id_permiso")
     private Integer idPermiso;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
+    @Column(name = "activo")
+    private String activo;
+    @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "descripcion")
     private String descripcion;
+    @Basic(optional = false)
+    @Column(name = "usuario_creacion")
+    private String usuarioCreacion;
+    @Column(name = "usuario_modificacion")
+    private String usuarioModificacion;
+    @Basic(optional = false)
+    @Column(name = "fecha_creacion")
+    private String fechaCreacion;
     @Column(name = "fecha_modificacion")
     @Temporal(TemporalType.DATE)
     private Date fechaModificacion;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_modificacion")
-    private String usuarioModificacion;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_creacion")
-    private String usuarioCreacion;
-    @Column(name = "fecha_creacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaCreacion;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "activo")
-    private String activo;
     @JoinTable(name = "roles_permisos", joinColumns = {
         @JoinColumn(name = "id_permiso", referencedColumnName = "id_permiso")}, inverseJoinColumns = {
         @JoinColumn(name = "id_rol", referencedColumnName = "id_rol")})
@@ -92,11 +83,13 @@ public class Permisos implements Serializable {
         this.idPermiso = idPermiso;
     }
 
-    public Permisos(Integer idPermiso, String nombre, String descripcion, String activo) {
+    public Permisos(Integer idPermiso, String activo, String nombre, String descripcion, String usuarioCreacion, String fechaCreacion) {
         this.idPermiso = idPermiso;
+        this.activo = activo;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.activo = activo;
+        this.usuarioCreacion = usuarioCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Integer getIdPermiso() {
@@ -105,6 +98,14 @@ public class Permisos implements Serializable {
 
     public void setIdPermiso(Integer idPermiso) {
         this.idPermiso = idPermiso;
+    }
+
+    public String getActivo() {
+        return activo;
+    }
+
+    public void setActivo(String activo) {
+        this.activo = activo;
     }
 
     public String getNombre() {
@@ -123,12 +124,12 @@ public class Permisos implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public Date getFechaModificacion() {
-        return fechaModificacion;
+    public String getUsuarioCreacion() {
+        return usuarioCreacion;
     }
 
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
+    public void setUsuarioCreacion(String usuarioCreacion) {
+        this.usuarioCreacion = usuarioCreacion;
     }
 
     public String getUsuarioModificacion() {
@@ -139,28 +140,20 @@ public class Permisos implements Serializable {
         this.usuarioModificacion = usuarioModificacion;
     }
 
-    public String getUsuarioCreacion() {
-        return usuarioCreacion;
-    }
-
-    public void setUsuarioCreacion(String usuarioCreacion) {
-        this.usuarioCreacion = usuarioCreacion;
-    }
-
-    public Date getFechaCreacion() {
+    public String getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(Date fechaCreacion) {
+    public void setFechaCreacion(String fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getActivo() {
-        return activo;
+    public Date getFechaModificacion() {
+        return fechaModificacion;
     }
 
-    public void setActivo(String activo) {
-        this.activo = activo;
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
     }
 
     @XmlTransient
@@ -194,7 +187,7 @@ public class Permisos implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Permisos[ idPermiso=" + idPermiso + " ]";
+        return "com.mycompany.mavenproject1.Permisos[ idPermiso=" + idPermiso + " ]";
     }
     
 }

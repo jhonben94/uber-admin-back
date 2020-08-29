@@ -22,14 +22,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "roles")
@@ -37,13 +35,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r")
     , @NamedQuery(name = "Roles.findByIdRol", query = "SELECT r FROM Roles r WHERE r.idRol = :idRol")
-    , @NamedQuery(name = "Roles.findByCodigo", query = "SELECT r FROM Roles r WHERE r.codigo = :codigo")
+    , @NamedQuery(name = "Roles.findByDescripcion", query = "SELECT r FROM Roles r WHERE r.descripcion = :descripcion")
     , @NamedQuery(name = "Roles.findByNombre", query = "SELECT r FROM Roles r WHERE r.nombre = :nombre")
-    , @NamedQuery(name = "Roles.findByFechaModificacion", query = "SELECT r FROM Roles r WHERE r.fechaModificacion = :fechaModificacion")
-    , @NamedQuery(name = "Roles.findByUsuarioModificacion", query = "SELECT r FROM Roles r WHERE r.usuarioModificacion = :usuarioModificacion")
+    , @NamedQuery(name = "Roles.findByActivo", query = "SELECT r FROM Roles r WHERE r.activo = :activo")
     , @NamedQuery(name = "Roles.findByUsuarioCreacion", query = "SELECT r FROM Roles r WHERE r.usuarioCreacion = :usuarioCreacion")
+    , @NamedQuery(name = "Roles.findByUsuarioModificacion", query = "SELECT r FROM Roles r WHERE r.usuarioModificacion = :usuarioModificacion")
     , @NamedQuery(name = "Roles.findByFechaCreacion", query = "SELECT r FROM Roles r WHERE r.fechaCreacion = :fechaCreacion")
-    , @NamedQuery(name = "Roles.findByActivo", query = "SELECT r FROM Roles r WHERE r.activo = :activo")})
+    , @NamedQuery(name = "Roles.findByFechaModificacion", query = "SELECT r FROM Roles r WHERE r.fechaModificacion = :fechaModificacion")})
 public class Roles implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,32 +51,26 @@ public class Roles implements Serializable {
     @Column(name = "id_rol")
     private Integer idRol;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "codigo")
-    private String codigo;
+    @Column(name = "descripcion")
+    private String descripcion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "fecha_modificacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaModificacion;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_modificacion")
-    private String usuarioModificacion;
-    @Size(max = 2147483647)
+    @Basic(optional = false)
+    @Column(name = "activo")
+    private String activo;
+    @Basic(optional = false)
     @Column(name = "usuario_creacion")
     private String usuarioCreacion;
+    @Column(name = "usuario_modificacion")
+    private String usuarioModificacion;
+    @Basic(optional = false)
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.DATE)
     private Date fechaCreacion;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "activo")
-    private String activo;
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaModificacion;
     @ManyToMany(mappedBy = "rolesList")
     private List<Permisos> permisosList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRol")
@@ -91,11 +83,13 @@ public class Roles implements Serializable {
         this.idRol = idRol;
     }
 
-    public Roles(Integer idRol, String codigo, String nombre, String activo) {
+    public Roles(Integer idRol, String descripcion, String nombre, String activo, String usuarioCreacion, Date fechaCreacion) {
         this.idRol = idRol;
-        this.codigo = codigo;
+        this.descripcion = descripcion;
         this.nombre = nombre;
         this.activo = activo;
+        this.usuarioCreacion = usuarioCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Integer getIdRol() {
@@ -106,12 +100,12 @@ public class Roles implements Serializable {
         this.idRol = idRol;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public String getNombre() {
@@ -122,20 +116,12 @@ public class Roles implements Serializable {
         this.nombre = nombre;
     }
 
-    public Date getFechaModificacion() {
-        return fechaModificacion;
+    public String getActivo() {
+        return activo;
     }
 
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
-    }
-
-    public String getUsuarioModificacion() {
-        return usuarioModificacion;
-    }
-
-    public void setUsuarioModificacion(String usuarioModificacion) {
-        this.usuarioModificacion = usuarioModificacion;
+    public void setActivo(String activo) {
+        this.activo = activo;
     }
 
     public String getUsuarioCreacion() {
@@ -146,6 +132,14 @@ public class Roles implements Serializable {
         this.usuarioCreacion = usuarioCreacion;
     }
 
+    public String getUsuarioModificacion() {
+        return usuarioModificacion;
+    }
+
+    public void setUsuarioModificacion(String usuarioModificacion) {
+        this.usuarioModificacion = usuarioModificacion;
+    }
+
     public Date getFechaCreacion() {
         return fechaCreacion;
     }
@@ -154,12 +148,12 @@ public class Roles implements Serializable {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getActivo() {
-        return activo;
+    public Date getFechaModificacion() {
+        return fechaModificacion;
     }
 
-    public void setActivo(String activo) {
-        this.activo = activo;
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
     }
 
     @XmlTransient
@@ -202,7 +196,7 @@ public class Roles implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Roles[ idRol=" + idRol + " ]";
+        return "com.mycompany.mavenproject1.Roles[ idRol=" + idRol + " ]";
     }
     
 }

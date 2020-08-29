@@ -6,22 +6,21 @@
 package py.com.uber.admin.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "definiciones")
@@ -31,36 +30,42 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Definiciones.findByIdDefinicion", query = "SELECT d FROM Definiciones d WHERE d.idDefinicion = :idDefinicion")
     , @NamedQuery(name = "Definiciones.findByActivo", query = "SELECT d FROM Definiciones d WHERE d.activo = :activo")
     , @NamedQuery(name = "Definiciones.findByNombre", query = "SELECT d FROM Definiciones d WHERE d.nombre = :nombre")
+    , @NamedQuery(name = "Definiciones.findByValor", query = "SELECT d FROM Definiciones d WHERE d.valor = :valor")
     , @NamedQuery(name = "Definiciones.findByDescripcion", query = "SELECT d FROM Definiciones d WHERE d.descripcion = :descripcion")
-    , @NamedQuery(name = "Definiciones.findByValor", query = "SELECT d FROM Definiciones d WHERE d.valor = :valor")})
+    , @NamedQuery(name = "Definiciones.findByUsuarioCreacion", query = "SELECT d FROM Definiciones d WHERE d.usuarioCreacion = :usuarioCreacion")
+    , @NamedQuery(name = "Definiciones.findByUsuarioModificacion", query = "SELECT d FROM Definiciones d WHERE d.usuarioModificacion = :usuarioModificacion")
+    , @NamedQuery(name = "Definiciones.findByFechaModificacion", query = "SELECT d FROM Definiciones d WHERE d.fechaModificacion = :fechaModificacion")
+    , @NamedQuery(name = "Definiciones.findByFechaCreacion", query = "SELECT d FROM Definiciones d WHERE d.fechaCreacion = :fechaCreacion")})
 public class Definiciones implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_definicion")
     private Integer idDefinicion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "activo")
     private String activo;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
+    @Column(name = "valor")
+    private String valor;
+    @Basic(optional = false)
     @Column(name = "descripcion")
     private String descripcion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "valor")
-    private String valor;
+    @Column(name = "usuario_creacion")
+    private String usuarioCreacion;
+    @Column(name = "usuario_modificacion")
+    private String usuarioModificacion;
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaModificacion;
+    @Basic(optional = false)
+    @Column(name = "fecha_creacion")
+    private String fechaCreacion;
 
     public Definiciones() {
     }
@@ -69,12 +74,14 @@ public class Definiciones implements Serializable {
         this.idDefinicion = idDefinicion;
     }
 
-    public Definiciones(Integer idDefinicion, String activo, String nombre, String descripcion, String valor) {
+    public Definiciones(Integer idDefinicion, String activo, String nombre, String valor, String descripcion, String usuarioCreacion, String fechaCreacion) {
         this.idDefinicion = idDefinicion;
         this.activo = activo;
         this.nombre = nombre;
-        this.descripcion = descripcion;
         this.valor = valor;
+        this.descripcion = descripcion;
+        this.usuarioCreacion = usuarioCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Integer getIdDefinicion() {
@@ -101,6 +108,14 @@ public class Definiciones implements Serializable {
         this.nombre = nombre;
     }
 
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
@@ -109,12 +124,36 @@ public class Definiciones implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public String getValor() {
-        return valor;
+    public String getUsuarioCreacion() {
+        return usuarioCreacion;
     }
 
-    public void setValor(String valor) {
-        this.valor = valor;
+    public void setUsuarioCreacion(String usuarioCreacion) {
+        this.usuarioCreacion = usuarioCreacion;
+    }
+
+    public String getUsuarioModificacion() {
+        return usuarioModificacion;
+    }
+
+    public void setUsuarioModificacion(String usuarioModificacion) {
+        this.usuarioModificacion = usuarioModificacion;
+    }
+
+    public Date getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
+
+    public String getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
     @Override
@@ -139,7 +178,7 @@ public class Definiciones implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Definiciones[ idDefinicion=" + idDefinicion + " ]";
+        return "com.mycompany.mavenproject1.Definiciones[ idDefinicion=" + idDefinicion + " ]";
     }
     
 }

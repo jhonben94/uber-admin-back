@@ -20,12 +20,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "viajes")
@@ -34,12 +33,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Viajes.findAll", query = "SELECT v FROM Viajes v")
     , @NamedQuery(name = "Viajes.findByIdViaje", query = "SELECT v FROM Viajes v WHERE v.idViaje = :idViaje")
     , @NamedQuery(name = "Viajes.findByFecha", query = "SELECT v FROM Viajes v WHERE v.fecha = :fecha")
-    , @NamedQuery(name = "Viajes.findByRecaudacion", query = "SELECT v FROM Viajes v WHERE v.recaudacion = :recaudacion")
     , @NamedQuery(name = "Viajes.findByCombustible", query = "SELECT v FROM Viajes v WHERE v.combustible = :combustible")
-    , @NamedQuery(name = "Viajes.findByGanancia", query = "SELECT v FROM Viajes v WHERE v.ganancia = :ganancia")
-    , @NamedQuery(name = "Viajes.findBySaldoARecibir", query = "SELECT v FROM Viajes v WHERE v.saldoARecibir = :saldoARecibir")
+    , @NamedQuery(name = "Viajes.findByPorcentajeUber", query = "SELECT v FROM Viajes v WHERE v.porcentajeUber = :porcentajeUber")
+    , @NamedQuery(name = "Viajes.findByRecaudacion", query = "SELECT v FROM Viajes v WHERE v.recaudacion = :recaudacion")
     , @NamedQuery(name = "Viajes.findByFondo", query = "SELECT v FROM Viajes v WHERE v.fondo = :fondo")
-    , @NamedQuery(name = "Viajes.findByPorcenajeUber", query = "SELECT v FROM Viajes v WHERE v.porcenajeUber = :porcenajeUber")})
+    , @NamedQuery(name = "Viajes.findBySaldoARecibir", query = "SELECT v FROM Viajes v WHERE v.saldoARecibir = :saldoARecibir")
+    , @NamedQuery(name = "Viajes.findByGastoExtra", query = "SELECT v FROM Viajes v WHERE v.gastoExtra = :gastoExtra")
+    , @NamedQuery(name = "Viajes.findByObservacion", query = "SELECT v FROM Viajes v WHERE v.observacion = :observacion")})
 public class Viajes implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,34 +49,28 @@ public class Viajes implements Serializable {
     @Column(name = "id_viaje")
     private Integer idViaje;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
+    @Column(name = "combustible")
+    private Integer combustible;
     @Basic(optional = false)
-    @NotNull
+    @Column(name = "porcentaje_uber")
+    private int porcentajeUber;
+    @Basic(optional = false)
     @Column(name = "recaudacion")
     private int recaudacion;
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "combustible")
-    private int combustible;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ganancia")
-    private int ganancia;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "saldo_a_recibir")
-    private int saldoARecibir;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "fondo")
     private int fondo;
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "porcenaje_uber")
-    private int porcenajeUber;
+    @Column(name = "saldo_a_recibir")
+    private String saldoARecibir;
+    @Column(name = "gasto_extra")
+    private Integer gastoExtra;
+    @Basic(optional = false)
+    @Column(name = "observacion")
+    private String observacion;
     @JoinColumn(name = "id_conductor", referencedColumnName = "id_conductor")
     @ManyToOne(optional = false)
     private Conductores idConductor;
@@ -91,15 +85,14 @@ public class Viajes implements Serializable {
         this.idViaje = idViaje;
     }
 
-    public Viajes(Integer idViaje, Date fecha, int recaudacion, int combustible, int ganancia, int saldoARecibir, int fondo, int porcenajeUber) {
+    public Viajes(Integer idViaje, Date fecha, int porcentajeUber, int recaudacion, int fondo, String saldoARecibir, String observacion) {
         this.idViaje = idViaje;
         this.fecha = fecha;
+        this.porcentajeUber = porcentajeUber;
         this.recaudacion = recaudacion;
-        this.combustible = combustible;
-        this.ganancia = ganancia;
-        this.saldoARecibir = saldoARecibir;
         this.fondo = fondo;
-        this.porcenajeUber = porcenajeUber;
+        this.saldoARecibir = saldoARecibir;
+        this.observacion = observacion;
     }
 
     public Integer getIdViaje() {
@@ -118,36 +111,28 @@ public class Viajes implements Serializable {
         this.fecha = fecha;
     }
 
+    public Integer getCombustible() {
+        return combustible;
+    }
+
+    public void setCombustible(Integer combustible) {
+        this.combustible = combustible;
+    }
+
+    public int getPorcentajeUber() {
+        return porcentajeUber;
+    }
+
+    public void setPorcentajeUber(int porcentajeUber) {
+        this.porcentajeUber = porcentajeUber;
+    }
+
     public int getRecaudacion() {
         return recaudacion;
     }
 
     public void setRecaudacion(int recaudacion) {
         this.recaudacion = recaudacion;
-    }
-
-    public int getCombustible() {
-        return combustible;
-    }
-
-    public void setCombustible(int combustible) {
-        this.combustible = combustible;
-    }
-
-    public int getGanancia() {
-        return ganancia;
-    }
-
-    public void setGanancia(int ganancia) {
-        this.ganancia = ganancia;
-    }
-
-    public int getSaldoARecibir() {
-        return saldoARecibir;
-    }
-
-    public void setSaldoARecibir(int saldoARecibir) {
-        this.saldoARecibir = saldoARecibir;
     }
 
     public int getFondo() {
@@ -158,12 +143,28 @@ public class Viajes implements Serializable {
         this.fondo = fondo;
     }
 
-    public int getPorcenajeUber() {
-        return porcenajeUber;
+    public String getSaldoARecibir() {
+        return saldoARecibir;
     }
 
-    public void setPorcenajeUber(int porcenajeUber) {
-        this.porcenajeUber = porcenajeUber;
+    public void setSaldoARecibir(String saldoARecibir) {
+        this.saldoARecibir = saldoARecibir;
+    }
+
+    public Integer getGastoExtra() {
+        return gastoExtra;
+    }
+
+    public void setGastoExtra(Integer gastoExtra) {
+        this.gastoExtra = gastoExtra;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
     public Conductores getIdConductor() {
@@ -204,7 +205,7 @@ public class Viajes implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Viajes[ idViaje=" + idViaje + " ]";
+        return "com.mycompany.mavenproject1.Viajes[ idViaje=" + idViaje + " ]";
     }
     
 }

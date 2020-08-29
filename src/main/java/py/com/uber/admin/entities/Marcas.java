@@ -21,16 +21,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "marcas")
@@ -41,10 +37,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
     , @NamedQuery(name = "Marcas.findByNombre", query = "SELECT m FROM Marcas m WHERE m.nombre = :nombre")
     , @NamedQuery(name = "Marcas.findByDescripcion", query = "SELECT m FROM Marcas m WHERE m.descripcion = :descripcion")
     , @NamedQuery(name = "Marcas.findByActivo", query = "SELECT m FROM Marcas m WHERE m.activo = :activo")
-    , @NamedQuery(name = "Marcas.findByFechaModificacion", query = "SELECT m FROM Marcas m WHERE m.fechaModificacion = :fechaModificacion")
     , @NamedQuery(name = "Marcas.findByUsuarioCreacion", query = "SELECT m FROM Marcas m WHERE m.usuarioCreacion = :usuarioCreacion")
     , @NamedQuery(name = "Marcas.findByUsuarioModificacion", query = "SELECT m FROM Marcas m WHERE m.usuarioModificacion = :usuarioModificacion")
-    , @NamedQuery(name = "Marcas.findByFechaCreacion", query = "SELECT m FROM Marcas m WHERE m.fechaCreacion = :fechaCreacion")})
+    , @NamedQuery(name = "Marcas.findByFechaCreacion", query = "SELECT m FROM Marcas m WHERE m.fechaCreacion = :fechaCreacion")
+    , @NamedQuery(name = "Marcas.findByFechaModificacion", query = "SELECT m FROM Marcas m WHERE m.fechaModificacion = :fechaModificacion")})
 public class Marcas implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,37 +50,28 @@ public class Marcas implements Serializable {
     @Column(name = "id_marca")
     private Integer idMarca;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "descripcion")
     private String descripcion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "activo")
     private String activo;
-    @Column(name = "fecha_modificacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaModificacion;
-    @Size(max = 2147483647)
+    @Basic(optional = false)
     @Column(name = "usuario_creacion")
     private String usuarioCreacion;
-    @Size(max = 2147483647)
     @Column(name = "usuario_modificacion")
     private String usuarioModificacion;
+    @Basic(optional = false)
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.DATE)
     private Date fechaCreacion;
-    @JsonBackReference
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaModificacion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMarca")
     private List<Modelos> modelosList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMarca")
-    private List<Vehiculos> vehiculosList;
 
     public Marcas() {
     }
@@ -93,11 +80,13 @@ public class Marcas implements Serializable {
         this.idMarca = idMarca;
     }
 
-    public Marcas(Integer idMarca, String nombre, String descripcion, String activo) {
+    public Marcas(Integer idMarca, String nombre, String descripcion, String activo, String usuarioCreacion, Date fechaCreacion) {
         this.idMarca = idMarca;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.activo = activo;
+        this.usuarioCreacion = usuarioCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Integer getIdMarca() {
@@ -132,14 +121,6 @@ public class Marcas implements Serializable {
         this.activo = activo;
     }
 
-    public Date getFechaModificacion() {
-        return fechaModificacion;
-    }
-
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
-    }
-
     public String getUsuarioCreacion() {
         return usuarioCreacion;
     }
@@ -164,6 +145,14 @@ public class Marcas implements Serializable {
         this.fechaCreacion = fechaCreacion;
     }
 
+    public Date getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
+
     @XmlTransient
     public List<Modelos> getModelosList() {
         return modelosList;
@@ -171,15 +160,6 @@ public class Marcas implements Serializable {
 
     public void setModelosList(List<Modelos> modelosList) {
         this.modelosList = modelosList;
-    }
-
-    @XmlTransient
-    public List<Vehiculos> getVehiculosList() {
-        return vehiculosList;
-    }
-
-    public void setVehiculosList(List<Vehiculos> vehiculosList) {
-        this.vehiculosList = vehiculosList;
     }
 
     @Override
@@ -204,7 +184,7 @@ public class Marcas implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Marcas[ idMarca=" + idMarca + " ]";
+        return "com.mycompany.mavenproject1.Marcas[ idMarca=" + idMarca + " ]";
     }
     
 }

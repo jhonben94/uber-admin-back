@@ -20,13 +20,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "usuarios")
@@ -34,13 +32,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Usuarios.findAll", query = "SELECT u FROM Usuarios u")
     , @NamedQuery(name = "Usuarios.findByIdUsuario", query = "SELECT u FROM Usuarios u WHERE u.idUsuario = :idUsuario")
-    , @NamedQuery(name = "Usuarios.findByUsername", query = "SELECT u FROM Usuarios u WHERE u.username = :username")
-    , @NamedQuery(name = "Usuarios.findByContrasena", query = "SELECT u FROM Usuarios u WHERE u.contrasena = :contrasena")
-    , @NamedQuery(name = "Usuarios.findByFechaModificacion", query = "SELECT u FROM Usuarios u WHERE u.fechaModificacion = :fechaModificacion")
+    , @NamedQuery(name = "Usuarios.findByActivo", query = "SELECT u FROM Usuarios u WHERE u.activo = :activo")
+    , @NamedQuery(name = "Usuarios.findByConstrasena", query = "SELECT u FROM Usuarios u WHERE u.constrasena = :constrasena")
+    , @NamedQuery(name = "Usuarios.findByUsuario", query = "SELECT u FROM Usuarios u WHERE u.usuario = :usuario")
     , @NamedQuery(name = "Usuarios.findByFechaCreacion", query = "SELECT u FROM Usuarios u WHERE u.fechaCreacion = :fechaCreacion")
-    , @NamedQuery(name = "Usuarios.findByUsuarioModificacion", query = "SELECT u FROM Usuarios u WHERE u.usuarioModificacion = :usuarioModificacion")
+    , @NamedQuery(name = "Usuarios.findByFechaModificacion", query = "SELECT u FROM Usuarios u WHERE u.fechaModificacion = :fechaModificacion")
     , @NamedQuery(name = "Usuarios.findByUsuarioCreacion", query = "SELECT u FROM Usuarios u WHERE u.usuarioCreacion = :usuarioCreacion")
-    , @NamedQuery(name = "Usuarios.findByActivo", query = "SELECT u FROM Usuarios u WHERE u.activo = :activo")})
+    , @NamedQuery(name = "Usuarios.findByUsuarioModificacion", query = "SELECT u FROM Usuarios u WHERE u.usuarioModificacion = :usuarioModificacion")})
 public class Usuarios implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,32 +48,26 @@ public class Usuarios implements Serializable {
     @Column(name = "id_usuario")
     private Integer idUsuario;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "username")
-    private String username;
+    @Column(name = "activo")
+    private String activo;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "contrasena")
-    private String contrasena;
-    @Column(name = "fecha_modificacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaModificacion;
+    @Column(name = "constrasena")
+    private String constrasena;
+    @Basic(optional = false)
+    @Column(name = "usuario")
+    private String usuario;
+    @Basic(optional = false)
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.DATE)
     private Date fechaCreacion;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_modificacion")
-    private String usuarioModificacion;
-    @Size(max = 2147483647)
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaModificacion;
+    @Basic(optional = false)
     @Column(name = "usuario_creacion")
     private String usuarioCreacion;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "activo")
-    private String activo;
+    @Column(name = "usuario_modificacion")
+    private String usuarioModificacion;
     @JoinColumn(name = "id_rol", referencedColumnName = "id_rol")
     @ManyToOne(optional = false)
     private Roles idRol;
@@ -87,11 +79,13 @@ public class Usuarios implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public Usuarios(Integer idUsuario, String username, String contrasena, String activo) {
+    public Usuarios(Integer idUsuario, String activo, String constrasena, String usuario, Date fechaCreacion, String usuarioCreacion) {
         this.idUsuario = idUsuario;
-        this.username = username;
-        this.contrasena = contrasena;
         this.activo = activo;
+        this.constrasena = constrasena;
+        this.usuario = usuario;
+        this.fechaCreacion = fechaCreacion;
+        this.usuarioCreacion = usuarioCreacion;
     }
 
     public Integer getIdUsuario() {
@@ -102,28 +96,28 @@ public class Usuarios implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public String getUsername() {
-        return username;
+    public String getActivo() {
+        return activo;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setActivo(String activo) {
+        this.activo = activo;
     }
 
-    public String getContrasena() {
-        return contrasena;
+    public String getConstrasena() {
+        return constrasena;
     }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+    public void setConstrasena(String constrasena) {
+        this.constrasena = constrasena;
     }
 
-    public Date getFechaModificacion() {
-        return fechaModificacion;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public Date getFechaCreacion() {
@@ -134,12 +128,12 @@ public class Usuarios implements Serializable {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getUsuarioModificacion() {
-        return usuarioModificacion;
+    public Date getFechaModificacion() {
+        return fechaModificacion;
     }
 
-    public void setUsuarioModificacion(String usuarioModificacion) {
-        this.usuarioModificacion = usuarioModificacion;
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
     }
 
     public String getUsuarioCreacion() {
@@ -150,12 +144,12 @@ public class Usuarios implements Serializable {
         this.usuarioCreacion = usuarioCreacion;
     }
 
-    public String getActivo() {
-        return activo;
+    public String getUsuarioModificacion() {
+        return usuarioModificacion;
     }
 
-    public void setActivo(String activo) {
-        this.activo = activo;
+    public void setUsuarioModificacion(String usuarioModificacion) {
+        this.usuarioModificacion = usuarioModificacion;
     }
 
     public Roles getIdRol() {
@@ -188,7 +182,7 @@ public class Usuarios implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Usuarios[ idUsuario=" + idUsuario + " ]";
+        return "com.mycompany.mavenproject1.Usuarios[ idUsuario=" + idUsuario + " ]";
     }
     
 }

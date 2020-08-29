@@ -21,16 +21,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "tipo_documentos")
@@ -38,13 +34,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @NamedQueries({
     @NamedQuery(name = "TipoDocumentos.findAll", query = "SELECT t FROM TipoDocumentos t")
     , @NamedQuery(name = "TipoDocumentos.findByIdTipoDocumento", query = "SELECT t FROM TipoDocumentos t WHERE t.idTipoDocumento = :idTipoDocumento")
-    , @NamedQuery(name = "TipoDocumentos.findByNombre", query = "SELECT t FROM TipoDocumentos t WHERE t.nombre = :nombre")
-    , @NamedQuery(name = "TipoDocumentos.findByCodigo", query = "SELECT t FROM TipoDocumentos t WHERE t.codigo = :codigo")
     , @NamedQuery(name = "TipoDocumentos.findByActivo", query = "SELECT t FROM TipoDocumentos t WHERE t.activo = :activo")
+    , @NamedQuery(name = "TipoDocumentos.findByNombre", query = "SELECT t FROM TipoDocumentos t WHERE t.nombre = :nombre")
+    , @NamedQuery(name = "TipoDocumentos.findByDescripcion", query = "SELECT t FROM TipoDocumentos t WHERE t.descripcion = :descripcion")
     , @NamedQuery(name = "TipoDocumentos.findByUsuarioCreacion", query = "SELECT t FROM TipoDocumentos t WHERE t.usuarioCreacion = :usuarioCreacion")
+    , @NamedQuery(name = "TipoDocumentos.findByFechaCreacion", query = "SELECT t FROM TipoDocumentos t WHERE t.fechaCreacion = :fechaCreacion")
     , @NamedQuery(name = "TipoDocumentos.findByUsuarioModificacion", query = "SELECT t FROM TipoDocumentos t WHERE t.usuarioModificacion = :usuarioModificacion")
-    , @NamedQuery(name = "TipoDocumentos.findByFechaModificacion", query = "SELECT t FROM TipoDocumentos t WHERE t.fechaModificacion = :fechaModificacion")
-    , @NamedQuery(name = "TipoDocumentos.findByFechaCreacion", query = "SELECT t FROM TipoDocumentos t WHERE t.fechaCreacion = :fechaCreacion")})
+    , @NamedQuery(name = "TipoDocumentos.findByFechaModificacion", query = "SELECT t FROM TipoDocumentos t WHERE t.fechaModificacion = :fechaModificacion")})
 public class TipoDocumentos implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,36 +50,27 @@ public class TipoDocumentos implements Serializable {
     @Column(name = "id_tipo_documento")
     private Integer idTipoDocumento;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
+    @Column(name = "activo")
+    private String activo;
+    @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "codigo")
-    private String codigo;
+    @Column(name = "descripcion")
+    private String descripcion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "activo")
-    private String activo;
-    @Size(max = 2147483647)
     @Column(name = "usuario_creacion")
     private String usuarioCreacion;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_modificacion")
-    private String usuarioModificacion;
-    @Column(name = "fecha_modificacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaModificacion;
+    @Basic(optional = false)
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.DATE)
     private Date fechaCreacion;
-    @JsonBackReference(value="titulares")
+    @Column(name = "usuario_modificacion")
+    private String usuarioModificacion;
+    @Column(name = "fecha_modificacion")
+    private String fechaModificacion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTipoDocumento")
     private List<Titulares> titularesList;
-    @JsonBackReference(value="conductores")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTipoDocumento")
     private List<Conductores> conductoresList;
 
@@ -94,11 +81,13 @@ public class TipoDocumentos implements Serializable {
         this.idTipoDocumento = idTipoDocumento;
     }
 
-    public TipoDocumentos(Integer idTipoDocumento, String nombre, String codigo, String activo) {
+    public TipoDocumentos(Integer idTipoDocumento, String activo, String nombre, String descripcion, String usuarioCreacion, Date fechaCreacion) {
         this.idTipoDocumento = idTipoDocumento;
-        this.nombre = nombre;
-        this.codigo = codigo;
         this.activo = activo;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.usuarioCreacion = usuarioCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Integer getIdTipoDocumento() {
@@ -109,6 +98,14 @@ public class TipoDocumentos implements Serializable {
         this.idTipoDocumento = idTipoDocumento;
     }
 
+    public String getActivo() {
+        return activo;
+    }
+
+    public void setActivo(String activo) {
+        this.activo = activo;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -117,20 +114,12 @@ public class TipoDocumentos implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getActivo() {
-        return activo;
-    }
-
-    public void setActivo(String activo) {
-        this.activo = activo;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public String getUsuarioCreacion() {
@@ -141,6 +130,14 @@ public class TipoDocumentos implements Serializable {
         this.usuarioCreacion = usuarioCreacion;
     }
 
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
     public String getUsuarioModificacion() {
         return usuarioModificacion;
     }
@@ -149,20 +146,12 @@ public class TipoDocumentos implements Serializable {
         this.usuarioModificacion = usuarioModificacion;
     }
 
-    public Date getFechaModificacion() {
+    public String getFechaModificacion() {
         return fechaModificacion;
     }
 
-    public void setFechaModificacion(Date fechaModificacion) {
+    public void setFechaModificacion(String fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
-    }
-
-    public Date getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
     }
 
     @XmlTransient
@@ -205,7 +194,7 @@ public class TipoDocumentos implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.TipoDocumentos[ idTipoDocumento=" + idTipoDocumento + " ]";
+        return "com.mycompany.mavenproject1.TipoDocumentos[ idTipoDocumento=" + idTipoDocumento + " ]";
     }
     
 }

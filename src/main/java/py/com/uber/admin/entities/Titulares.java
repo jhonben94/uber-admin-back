@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,17 +20,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "titulares")
@@ -37,19 +37,18 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Titulares.findAll", query = "SELECT t FROM Titulares t")
     , @NamedQuery(name = "Titulares.findByIdTitular", query = "SELECT t FROM Titulares t WHERE t.idTitular = :idTitular")
-    , @NamedQuery(name = "Titulares.findByUsuarioCreacion", query = "SELECT t FROM Titulares t WHERE t.usuarioCreacion = :usuarioCreacion")
-    , @NamedQuery(name = "Titulares.findByNombres", query = "SELECT t FROM Titulares t WHERE t.nombres = :nombres")
-    , @NamedQuery(name = "Titulares.findByApellidos", query = "SELECT t FROM Titulares t WHERE t.apellidos = :apellidos")
     , @NamedQuery(name = "Titulares.findByActivo", query = "SELECT t FROM Titulares t WHERE t.activo = :activo")
+    , @NamedQuery(name = "Titulares.findByNombre", query = "SELECT t FROM Titulares t WHERE t.nombre = :nombre")
+    , @NamedQuery(name = "Titulares.findByApellido", query = "SELECT t FROM Titulares t WHERE t.apellido = :apellido")
+    , @NamedQuery(name = "Titulares.findByDocumento", query = "SELECT t FROM Titulares t WHERE t.documento = :documento")
+    , @NamedQuery(name = "Titulares.findByCorreo", query = "SELECT t FROM Titulares t WHERE t.correo = :correo")
     , @NamedQuery(name = "Titulares.findByTelefono", query = "SELECT t FROM Titulares t WHERE t.telefono = :telefono")
-    , @NamedQuery(name = "Titulares.findByContrasena", query = "SELECT t FROM Titulares t WHERE t.contrasena = :contrasena")
-    , @NamedQuery(name = "Titulares.findByUsername", query = "SELECT t FROM Titulares t WHERE t.username = :username")
+    , @NamedQuery(name = "Titulares.findByUsuario", query = "SELECT t FROM Titulares t WHERE t.usuario = :usuario")
+    , @NamedQuery(name = "Titulares.findByUsuarioCreacion", query = "SELECT t FROM Titulares t WHERE t.usuarioCreacion = :usuarioCreacion")
+    , @NamedQuery(name = "Titulares.findByFechaCreacion", query = "SELECT t FROM Titulares t WHERE t.fechaCreacion = :fechaCreacion")
     , @NamedQuery(name = "Titulares.findByUsuarioModificacion", query = "SELECT t FROM Titulares t WHERE t.usuarioModificacion = :usuarioModificacion")
-    , @NamedQuery(name = "Titulares.findByCedula", query = "SELECT t FROM Titulares t WHERE t.cedula = :cedula")
-    , @NamedQuery(name = "Titulares.findBySexo", query = "SELECT t FROM Titulares t WHERE t.sexo = :sexo")
-    , @NamedQuery(name = "Titulares.findByEmail", query = "SELECT t FROM Titulares t WHERE t.email = :email")
     , @NamedQuery(name = "Titulares.findByFechaModificacion", query = "SELECT t FROM Titulares t WHERE t.fechaModificacion = :fechaModificacion")
-    , @NamedQuery(name = "Titulares.findByFechaCreacion", query = "SELECT t FROM Titulares t WHERE t.fechaCreacion = :fechaCreacion")})
+    , @NamedQuery(name = "Titulares.findBySexo", query = "SELECT t FROM Titulares t WHERE t.sexo = :sexo")})
 public class Titulares implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,69 +57,51 @@ public class Titulares implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_titular")
     private Integer idTitular;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_creacion")
-    private String usuarioCreacion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "nombres")
-    private String nombres;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "apellidos")
-    private String apellidos;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "activo")
     private String activo;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
+    @Column(name = "nombre")
+    private String nombre;
+    @Basic(optional = false)
+    @Column(name = "apellido")
+    private String apellido;
+    @Basic(optional = false)
+    @Column(name = "documento")
+    private String documento;
+    @Basic(optional = false)
+    @Column(name = "correo")
+    private String correo;
+    @Basic(optional = false)
     @Column(name = "telefono")
     private String telefono;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "contrasena")
-    private String contrasena;
+    @Column(name = "usuario")
+    private String usuario;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "username")
-    private String username;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_modificacion")
-    private String usuarioModificacion;
+    @Column(name = "usuario_creacion")
+    private String usuarioCreacion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "cedula")
-    private String cedula;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "sexo")
-    private String sexo;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "email")
-    private String email;
-    @Column(name = "fecha_modificacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaModificacion;
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.DATE)
     private Date fechaCreacion;
+    @Basic(optional = false)
+    @Column(name = "usuario_modificacion")
+    private String usuarioModificacion;
+    @Basic(optional = false)
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaModificacion;
+    @Basic(optional = false)
+    @Column(name = "sexo")
+    private String sexo;
     @ManyToMany(mappedBy = "titularesList")
     private List<Conductores> conductoresList;
     @JoinColumn(name = "id_tipo_documento", referencedColumnName = "id_tipo_documento")
     @ManyToOne(optional = false)
     private TipoDocumentos idTipoDocumento;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTitular")
+    private List<Vehiculos> vehiculosList;
 
     public Titulares() {
     }
@@ -129,17 +110,20 @@ public class Titulares implements Serializable {
         this.idTitular = idTitular;
     }
 
-    public Titulares(Integer idTitular, String nombres, String apellidos, String activo, String telefono, String contrasena, String username, String cedula, String sexo, String email) {
+    public Titulares(Integer idTitular, String activo, String nombre, String apellido, String documento, String correo, String telefono, String usuario, String usuarioCreacion, Date fechaCreacion, String usuarioModificacion, Date fechaModificacion, String sexo) {
         this.idTitular = idTitular;
-        this.nombres = nombres;
-        this.apellidos = apellidos;
         this.activo = activo;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.documento = documento;
+        this.correo = correo;
         this.telefono = telefono;
-        this.contrasena = contrasena;
-        this.username = username;
-        this.cedula = cedula;
+        this.usuario = usuario;
+        this.usuarioCreacion = usuarioCreacion;
+        this.fechaCreacion = fechaCreacion;
+        this.usuarioModificacion = usuarioModificacion;
+        this.fechaModificacion = fechaModificacion;
         this.sexo = sexo;
-        this.email = email;
     }
 
     public Integer getIdTitular() {
@@ -150,36 +134,44 @@ public class Titulares implements Serializable {
         this.idTitular = idTitular;
     }
 
-    public String getUsuarioCreacion() {
-        return usuarioCreacion;
-    }
-
-    public void setUsuarioCreacion(String usuarioCreacion) {
-        this.usuarioCreacion = usuarioCreacion;
-    }
-
-    public String getNombres() {
-        return nombres;
-    }
-
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
-    }
-
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
-
     public String getActivo() {
         return activo;
     }
 
     public void setActivo(String activo) {
         this.activo = activo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
     public String getTelefono() {
@@ -190,20 +182,28 @@ public class Titulares implements Serializable {
         this.telefono = telefono;
     }
 
-    public String getContrasena() {
-        return contrasena;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUsuarioCreacion() {
+        return usuarioCreacion;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsuarioCreacion(String usuarioCreacion) {
+        this.usuarioCreacion = usuarioCreacion;
+    }
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
     public String getUsuarioModificacion() {
@@ -214,30 +214,6 @@ public class Titulares implements Serializable {
         this.usuarioModificacion = usuarioModificacion;
     }
 
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Date getFechaModificacion() {
         return fechaModificacion;
     }
@@ -246,12 +222,12 @@ public class Titulares implements Serializable {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public Date getFechaCreacion() {
-        return fechaCreacion;
+    public String getSexo() {
+        return sexo;
     }
 
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 
     @XmlTransient
@@ -269,6 +245,15 @@ public class Titulares implements Serializable {
 
     public void setIdTipoDocumento(TipoDocumentos idTipoDocumento) {
         this.idTipoDocumento = idTipoDocumento;
+    }
+
+    @XmlTransient
+    public List<Vehiculos> getVehiculosList() {
+        return vehiculosList;
+    }
+
+    public void setVehiculosList(List<Vehiculos> vehiculosList) {
+        this.vehiculosList = vehiculosList;
     }
 
     @Override
@@ -293,7 +278,7 @@ public class Titulares implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Titulares[ idTitular=" + idTitular + " ]";
+        return "com.mycompany.mavenproject1.Titulares[ idTitular=" + idTitular + " ]";
     }
     
 }

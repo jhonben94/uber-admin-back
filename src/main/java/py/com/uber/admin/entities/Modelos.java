@@ -7,7 +7,9 @@ package py.com.uber.admin.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,16 +19,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author jhony
+ * @author 59599
  */
 @Entity
 @Table(name = "modelos")
@@ -34,13 +36,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Modelos.findAll", query = "SELECT m FROM Modelos m")
     , @NamedQuery(name = "Modelos.findByIdModelo", query = "SELECT m FROM Modelos m WHERE m.idModelo = :idModelo")
-    , @NamedQuery(name = "Modelos.findByFechaModificacion", query = "SELECT m FROM Modelos m WHERE m.fechaModificacion = :fechaModificacion")
-    , @NamedQuery(name = "Modelos.findByFechaCreacion", query = "SELECT m FROM Modelos m WHERE m.fechaCreacion = :fechaCreacion")
+    , @NamedQuery(name = "Modelos.findByActivo", query = "SELECT m FROM Modelos m WHERE m.activo = :activo")
+    , @NamedQuery(name = "Modelos.findByDescripcion", query = "SELECT m FROM Modelos m WHERE m.descripcion = :descripcion")
+    , @NamedQuery(name = "Modelos.findByNombre", query = "SELECT m FROM Modelos m WHERE m.nombre = :nombre")
     , @NamedQuery(name = "Modelos.findByUsuarioCreacion", query = "SELECT m FROM Modelos m WHERE m.usuarioCreacion = :usuarioCreacion")
     , @NamedQuery(name = "Modelos.findByUsuarioModificacion", query = "SELECT m FROM Modelos m WHERE m.usuarioModificacion = :usuarioModificacion")
-    , @NamedQuery(name = "Modelos.findByNombre", query = "SELECT m FROM Modelos m WHERE m.nombre = :nombre")
-    , @NamedQuery(name = "Modelos.findByActivo", query = "SELECT m FROM Modelos m WHERE m.activo = :activo")
-    , @NamedQuery(name = "Modelos.findByDescripcion", query = "SELECT m FROM Modelos m WHERE m.descripcion = :descripcion")})
+    , @NamedQuery(name = "Modelos.findByFechaCreacion", query = "SELECT m FROM Modelos m WHERE m.fechaCreacion = :fechaCreacion")
+    , @NamedQuery(name = "Modelos.findByFechaModificacion", query = "SELECT m FROM Modelos m WHERE m.fechaModificacion = :fechaModificacion")})
 public class Modelos implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,36 +51,33 @@ public class Modelos implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_modelo")
     private Integer idModelo;
-    @Column(name = "fecha_modificacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaModificacion;
-    @Column(name = "fecha_creacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaCreacion;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_creacion")
-    private String usuarioCreacion;
-    @Size(max = 2147483647)
-    @Column(name = "usuario_modificacion")
-    private String usuarioModificacion;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "nombre")
-    private String nombre;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "activo")
     private String activo;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "descripcion")
     private String descripcion;
+    @Basic(optional = false)
+    @Column(name = "nombre")
+    private String nombre;
+    @Basic(optional = false)
+    @Column(name = "usuario_creacion")
+    private String usuarioCreacion;
+    @Basic(optional = false)
+    @Column(name = "usuario_modificacion")
+    private String usuarioModificacion;
+    @Basic(optional = false)
+    @Column(name = "fecha_creacion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaCreacion;
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaModificacion;
     @JoinColumn(name = "id_marca", referencedColumnName = "id_marca")
     @ManyToOne(optional = false)
     private Marcas idMarca;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idModelo")
+    private List<Vehiculos> vehiculosList;
 
     public Modelos() {
     }
@@ -87,11 +86,14 @@ public class Modelos implements Serializable {
         this.idModelo = idModelo;
     }
 
-    public Modelos(Integer idModelo, String nombre, String activo, String descripcion) {
+    public Modelos(Integer idModelo, String activo, String descripcion, String nombre, String usuarioCreacion, String usuarioModificacion, Date fechaCreacion) {
         this.idModelo = idModelo;
-        this.nombre = nombre;
         this.activo = activo;
         this.descripcion = descripcion;
+        this.nombre = nombre;
+        this.usuarioCreacion = usuarioCreacion;
+        this.usuarioModificacion = usuarioModificacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Integer getIdModelo() {
@@ -100,46 +102,6 @@ public class Modelos implements Serializable {
 
     public void setIdModelo(Integer idModelo) {
         this.idModelo = idModelo;
-    }
-
-    public Date getFechaModificacion() {
-        return fechaModificacion;
-    }
-
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
-    }
-
-    public Date getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public String getUsuarioCreacion() {
-        return usuarioCreacion;
-    }
-
-    public void setUsuarioCreacion(String usuarioCreacion) {
-        this.usuarioCreacion = usuarioCreacion;
-    }
-
-    public String getUsuarioModificacion() {
-        return usuarioModificacion;
-    }
-
-    public void setUsuarioModificacion(String usuarioModificacion) {
-        this.usuarioModificacion = usuarioModificacion;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 
     public String getActivo() {
@@ -158,12 +120,61 @@ public class Modelos implements Serializable {
         this.descripcion = descripcion;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getUsuarioCreacion() {
+        return usuarioCreacion;
+    }
+
+    public void setUsuarioCreacion(String usuarioCreacion) {
+        this.usuarioCreacion = usuarioCreacion;
+    }
+
+    public String getUsuarioModificacion() {
+        return usuarioModificacion;
+    }
+
+    public void setUsuarioModificacion(String usuarioModificacion) {
+        this.usuarioModificacion = usuarioModificacion;
+    }
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Date getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
+
     public Marcas getIdMarca() {
         return idMarca;
     }
 
     public void setIdMarca(Marcas idMarca) {
         this.idMarca = idMarca;
+    }
+
+    @XmlTransient
+    public List<Vehiculos> getVehiculosList() {
+        return vehiculosList;
+    }
+
+    public void setVehiculosList(List<Vehiculos> vehiculosList) {
+        this.vehiculosList = vehiculosList;
     }
 
     @Override
@@ -188,7 +199,7 @@ public class Modelos implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Modelos[ idModelo=" + idModelo + " ]";
+        return "com.mycompany.mavenproject1.Modelos[ idModelo=" + idModelo + " ]";
     }
     
 }
